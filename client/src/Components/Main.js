@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import Card from '../Components/Card'
 import fileNotFound from '../filenotfound404.png'
+import Loading from '../Loading.gif'
 
 
 export default function Main(props) {
+  const {state}=props
   const [fileData, setFileData] = useState([])
   const [userFiles, setUserFiles] = useState(false)
   const [accessedFiles, setAccessedFiles] = useState(false)
   const [allFiles, setAllFiles] = useState(true)
+  const [loading,setLoading]=useState(false)
 
   //displaying accessed files 
   const displayAccessFiles = async () => {
     if (props.state.contract) {
+      setLoading(true)
       const data = await props.state.contract.displayData()
       console.log("uploaded data: ", data)
       const formattedData = data.map((fileURL) => ({
@@ -20,6 +24,7 @@ export default function Main(props) {
         timeStamp: "3245345345"
       }));
       setFileData(formattedData);
+      setLoading(false)
     }
   }
 
@@ -36,6 +41,7 @@ export default function Main(props) {
   //displaying user files
   const displayUserFiles = async () => {
     if (props.state.contract) {
+      setLoading(true)
       const Userdata = await props.state.contract.displayUserFiles(props.accounts)
       console.log("user uploaded data: ", Userdata)
       const formattedData = Userdata.map((fileURL) => ({
@@ -44,6 +50,7 @@ export default function Main(props) {
         timeStamp: "3245345345"
       }));
       setFileData(formattedData);
+      setLoading(false)
     }
   }
 
@@ -73,7 +80,7 @@ export default function Main(props) {
 
         <ul className='container'>
           {fileData.length > 0 ? (fileData.map((files, index) => {
-            return (<Card key={index} data={files} />)
+            return (<Card key={index} data={files} state={state} />)
           })) : (
             <div style={{ textAlign: 'center' }}>
               <img src={fileNotFound} alt="No files Uploaded yet!" />

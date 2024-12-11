@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import fileNotFound from '../filenotfound404.png'
-// import Loading from '../Loading.gif'
+import Loading from '../Loading.gif'
 
 export default function Header(props) {
     const [selectedFile, setSelectedFile] = useState(null)
+    const [loading,setLoading]=useState(false)
     const [openUploads, setOpenUploads] = useState(false)
 
     const ConnectWallet = () => {
+        setLoading(true)
         props.ConnectWallet()
+        setLoading(false)
     }
 
     const handleFiles = (e) => {
@@ -38,7 +40,7 @@ export default function Header(props) {
                 <nav>
                     <ul>
                         <Link to="/about"><li>About</li></Link>
-                        <Link to="https://github.com"><li>Github</li></Link>
+                        <Link to="https://github.com/Harshdev098/GDrive-3.0" target='_blank'><li>Github</li></Link>
                         <Link to="/contact"><li>Contact</li></Link>
                         <li>{props.accounts ? (<p>{`${props.accounts.slice(0, 7)}....${props.accounts.slice(36)}`}</p>) : (<button onClick={ConnectWallet}>Connect Wallet</button>)}</li>
                     </ul>

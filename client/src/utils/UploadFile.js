@@ -8,18 +8,14 @@ export const handleSubmit = async (selectedFile, state) => {
     try {
         if (state.contract) {
             console.log("props ar: ", state.contract)
-            console.log("file", selectedFile)
             const upload = await pinata.upload.file(selectedFile)
-            console.log("upload data: ", upload)
             const ipfsURL = await pinata.gateways.convert(upload.IpfsHash)
             const ipfsHash = upload.IpfsHash.toString();
-            console.log("url: ", ipfsURL)
-            console.log('signer', state.signer)
             const Size = upload.PinSize
             const timeStamp = upload.Timestamp.toString()
             const formattedTimeStamp=(timeStamp.split('Z')[0]).replace('T',', ')
             const uploadContract = await state.contract.uploadFile(`${ipfsHash}`,'filename',formattedTimeStamp,Size);
-            console.log("uploaded contract: ", uploadContract)
+            uploadContract.wait()
             return {fileURL:ipfsHash,fileSize:Size,timeStamp:formattedTimeStamp};
         }
     } catch (err) {

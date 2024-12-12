@@ -17,7 +17,6 @@ export default function Main(props) {
     if (props.state.contract) {
       setLoading({status:true,para:'Fetching files Please Wait...'})
       const data = await props.state.contract.displayData()
-      console.log("uploaded data in accessfiles: ", data)
       const formattedData = data.map((file) => ({
         // fileName:file.name,
         fileURL:file.url,
@@ -34,21 +33,21 @@ export default function Main(props) {
   
   // displaying recently uploaded file 
   useEffect(()=>{
-    if(allFiles===true){
-      console.log("displaying the recently uploaded file",props.uploadedFile)
-      setFileData((prevFiles)=>[...prevFiles,props.uploadedFile])
+    if (props.state.contract && props.uploadedFile && props.uploadedFile.fileURL) {
+      if (allFiles === true) {
+        console.log("Displaying the recently uploaded file", props.uploadedFile);
+        setFileData((prevFiles) => [...prevFiles, props.uploadedFile]);
+      } else if (userFiles === true) {
+        setUserFiles((prevFiles) => [...prevFiles, props.uploadedFile]);
+      }
     }
-    else if(userFiles===true){
-      setUserFiles((prevFiles)=>[...prevFiles,props.uploadedFile])
-    }
-  },[props.uploadedFile])
+  },[props.uploadedFile,props.state.contract])
 
   //displaying user files
   const displayUserFiles = async () => {
     if (props.state.contract) {
       setLoading({status:true,para:'Fetching files Please Wait...'})
       const Userdata = await props.state.contract.displayUserFiles(props.accounts)
-      console.log("user uploaded data: ", Userdata)
       const formattedData = Userdata.map((file) => ({
         fileName:file.name,
         fileURL:file.url,
@@ -87,7 +86,7 @@ export default function Main(props) {
 
         <ul className='container'>
           {fileData.length > 0 ? (fileData.map((files, index) => {
-            return (<Card key={index} data={files} state={state} />)
+            return (files.fileURL && <Card key={index} data={files} state={state} />)
           })) : (
             <div style={{ textAlign: 'center' }}>
               <img src={fileNotFound} alt="No files Uploaded yet!" />

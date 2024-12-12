@@ -94,7 +94,6 @@ contract Drive {
         if (!alreadyHasFile) {
             ownership[user].push(FileOwnership(url, true));
         }
-        emit accessGiven(msg.sender, url, user);
     }
 
     function DenyAccess(string memory url, address user) public {
@@ -109,7 +108,6 @@ contract Drive {
                         ownership[user][j].access = false;
                     }
                 }
-                emit accessRevoked(msg.sender, url, user);
                 break;
             }
         }

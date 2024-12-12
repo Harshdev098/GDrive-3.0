@@ -17,7 +17,6 @@ export default function Card(props) {
       setLoading({status:true,para:'Deleting Your File'})
       try {
         const unpin = await pinata.unpin([`${props.data.fileURL}`])
-        console.log("Upin done ", unpin)
         alert("File deleted successfuly!")
         setDialogBox(false)
       } catch (err) {
@@ -54,12 +53,10 @@ export default function Card(props) {
     const displayAccessList=async()=>{
       setLoading({status:true,para:'Please Wait!!'})
       const list=await props.state.contract.getAccessList(props.data.fileURL)
-      console.log("list are: ",list)
       const parsedList = list.map(item => ({
         status: item[0], 
         userAddress: item[1] 
       }));
-      console.log("Parsed list:", parsedList);
       setAccessList(parsedList);
       setLoading({status:false,para:null})
     }

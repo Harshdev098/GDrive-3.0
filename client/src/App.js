@@ -6,13 +6,13 @@ import { ethers } from 'ethers';
 import Drive from './contracts/contracts/Drive.sol/Drive.json'
 import Main from './Components/Main';
 import { handleSubmit } from './utils/UploadFile';
-import Loading from './Loading.gif'
+import Loader from './Components/Loader';
 
 function App() {
   const [state, setState] = useState({ provider: null, signer: null, contract: null })
   const [accounts, setAccounts] = useState(null)
   const [uploadedFile,setUploadedFile]=useState([])
-  const [loading,setLoading]=useState(false)
+  const [loading,setLoading]=useState({status:false,para:null})
 
   useEffect(() => {
     const checkConnection = async () => {
@@ -33,17 +33,16 @@ function App() {
     checkConnection()
   }, [])
 
-  const CreateConnection = async (provider) => {
+  const CreateConnection = async (provider) => { // creating connection with contract
     let signer = await provider.getSigner()
-    console.log("signer: ", signer)
     const ContractABI = Drive.abi
-    const ContractAddress = '0xAA8D47967484e950c92349fC602b2aA4Ee1B6E03'
+    const ContractAddress = '0xf3EAddc851d608E6262f5F8985bAdf548c22Bb95'
     const contract = new ethers.Contract(ContractAddress, ContractABI, signer)
     setState({ provider: provider, signer: signer, contract: contract })
   }
 
   const ConnectWallet = async () => {
-    setLoading(true)
+  setLoading({status:true,para:'Connecting Wallet...'})
     let provider
     if (window.ethereum) {
       provider = new ethers.BrowserProvider(window.ethereum)
@@ -57,21 +56,22 @@ function App() {
       alert("No Wallet Found!! Please use Metamask")
     }
     await CreateConnection(provider)
-    setLoading(false)
+    setLoading({status:false,para:null})
   }
 
   const UploadFiletoPinata=async(selectedFile)=>{
-    setLoading(true)
-    console.log("calling uploadFiletoPinata function")
-    const data=await handleSubmit(selectedFile,state);
+    setLoading({status:true,para:'Please wait! Uploading your File'})
+    const data=await handleSubmit(selectedFile,state); // handling file upload to pinata 
     console.log("data in the function uploadfiletopinata is ",data)
+    console.log('file data in app.js function uploadFiletopinata',data.fileSize,data.timeStamp)
     setUploadedFile({fileURL:data.fileURL,fileSize:data.fileSize,timeStamp:data.timeStamp})
-    setLoading(false)
+    setLoading({status:false,para:null})
   }
 
   return (
     <BrowserRouter>
     <Header ConnectWallet={ConnectWallet} state={state} accounts={accounts} UploadFiletoPinata={UploadFiletoPinata} />
+    {loading.status && <Loader para={loading.para} />}
       <Routes>
         <Route path='/' element={<Main ConnectWallet={ConnectWallet} state={state} accounts={accounts} uploadedFile={uploadedFile} />} />
         <Route path='/about' />

@@ -1,38 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Loading from '../Loading.gif'
-
 export default function Header(props) {
     const [selectedFile, setSelectedFile] = useState(null)
-    const [loading,setLoading]=useState(false)
     const [openUploads, setOpenUploads] = useState(false)
 
     const ConnectWallet = () => {
-        setLoading(true)
         props.ConnectWallet()
-        setLoading(false)
     }
 
     const handleFiles = (e) => {
         setSelectedFile(e.target.files[0])
     }
 
-    const uploadFile=()=>{
+    const uploadFile=()=>{ // calling upload function
         props.UploadFiletoPinata(selectedFile);
         setOpenUploads(false)
     }
-
-    useEffect(() => {
-        if (props.state.contract) {
-            const listener = (sender, url) => {
-                console.log(`Debug: ${sender} uploaded ${url}`);
-            };
-            props.state.contract.on("DebugUpload", listener);
-            return () => {
-                props.state.contract.off("DebugUpload", listener);
-            };
-        }
-    }, [props.state.contract]);
 
     return (
         <>

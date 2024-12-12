@@ -6,18 +6,27 @@ contract Drive {
         bool status;
         address userAddress;
     }
-    mapping(address => string[]) public uploads;
+    struct FileOwnership {
+        string url;
+        bool access;
+    }
+    struct UploadData{
+        string url;
+        string name;
+        string date;
+        uint size;
+    }
+    mapping(address => UploadData[]) public uploads;
     mapping(address => mapping(string => List[])) public AccessList;
-    mapping(address => string[]) public ownership;
+    mapping(address => FileOwnership[]) public ownership;
 
     event accessGiven(address owner, string url, address user);
     event accessRevoked(address owner, string url, address user);
     event DebugUpload(address sender, string url);
 
-    function uploadFile(string memory url) public {
+    function uploadFile(string memory url,string memory name,string memory date,uint size) public {
         require(bytes(url).length > 0, "URL cannot be empty");
-        require(msg.sender != address(0), "Invalid sender address");
-        uploads[msg.sender].push(url);
+        uploads[msg.sender].push(UploadData(url,name,date,size));
         emit DebugUpload(msg.sender, url);
     }
 
@@ -28,12 +37,26 @@ contract Drive {
     }
 
     function displayData() public view returns (string[] memory) {
-        return ownership[msg.sender];
+    uint count = 0;
+    for (uint i = 0; i < ownership[msg.sender].length; i++) {
+        if (ownership[msg.sender][i].access == true) {
+            count++;
+        }
     }
+    string[] memory files = new string[](count);
+    uint index = 0;
+    for (uint i = 0; i < ownership[msg.sender].length; i++) {
+        if (ownership[msg.sender][i].access == true) {
+            files[index] = ownership[msg.sender][i].url;
+            index++;
+        }
+    }
+    return files;
+}
 
     function displayUserFiles(
         address user
-    ) public view returns (string[] memory) {
+    ) public view returns (UploadData[] memory) {
         return uploads[user];
     }
 
@@ -54,14 +77,22 @@ contract Drive {
         }
         bool alreadyHasFile = false;
         for (uint256 i = 0; i < ownership[user].length; i++) {
-            if (keccak256(bytes(ownership[user][i])) == keccak256(bytes(url))) {
+            if (
+                keccak256(bytes(ownership[user][i].url)) ==
+                keccak256(bytes(url))
+            ) {
                 alreadyHasFile = true;
-                break;
+                if (ownership[user][i].access == false) {
+                    ownership[user][i].access = true;
+                    break;
+                } else {
+                    break;
+                }
             }
         }
 
         if (!alreadyHasFile) {
-            ownership[user].push(url);
+            ownership[user].push(FileOwnership(url, true));
         }
         emit accessGiven(msg.sender, url, user);
     }
@@ -70,6 +101,14 @@ contract Drive {
         for (uint256 i = 0; i < AccessList[msg.sender][url].length; i++) {
             if (AccessList[msg.sender][url][i].userAddress == user) {
                 AccessList[msg.sender][url][i].status = false;
+                for (uint256 j = 0; j < ownership[user].length; j++) {
+                    if (
+                        keccak256(bytes(ownership[user][j].url)) ==
+                        keccak256(bytes(url))
+                    ) {
+                        ownership[user][j].access = false;
+                    }
+                }
                 emit accessRevoked(msg.sender, url, user);
                 break;
             }

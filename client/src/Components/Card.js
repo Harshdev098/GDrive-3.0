@@ -4,17 +4,17 @@ import preview from '../preview.jpg'
 import { pinata } from '../utils/pinata'
 import { GiveAccessToUser } from '../utils/Access'
 import AccessList from './AccessList'
-import Loading from '../Loading.gif'
+import Loader from './Loader'
 
 export default function Card(props) {
   const [dialogBox, setDialogBox] = useState(false)
   const [accessList,setAccessList]=useState([])
-  const [loading,setLoading]=useState(false)
+  const [loading,setLoading]=useState({status:false,para:null})
   const name = useRef()
 
   const DeleteFile = async () => {
     if (window.confirm("Are You sure to delete this file")) {
-      setLoading(true)
+      setLoading({status:true,para:'Deleting Your File'})
       try {
         const unpin = await pinata.unpin([`${props.data.fileURL}`])
         console.log("Upin done ", unpin)
@@ -24,7 +24,7 @@ export default function Card(props) {
         console.log("an error occured while deletion ", err)
         alert("An error occured while deletion")
       }
-      setLoading(false)
+      setLoading({status:false,para:null})
     }
   }
 
@@ -34,7 +34,7 @@ export default function Card(props) {
       alert("Please enter a valid Ethereum address.");
       return;
     }
-    setLoading(true)
+    setLoading({status:true,para:'Forwarding Access!'})
     const result=await GiveAccessToUser(props.data.fileURL,userAddress, props.state)
     console.log("result of giveaccess",result)
     if (result) {
@@ -43,7 +43,7 @@ export default function Card(props) {
     } else {
       alert("Failed to give access to the user.");
     }
-    setLoading(false)
+    setLoading({status:false,para:null})
   }
 
   const handleRevokeAccess=(address)=>{
@@ -52,7 +52,7 @@ export default function Card(props) {
 
   useEffect(()=>{
     const displayAccessList=async()=>{
-      setLoading(true)
+      setLoading({status:true,para:'Please Wait!!'})
       const list=await props.state.contract.getAccessList(props.data.fileURL)
       console.log("list are: ",list)
       const parsedList = list.map(item => ({
@@ -61,7 +61,7 @@ export default function Card(props) {
       }));
       console.log("Parsed list:", parsedList);
       setAccessList(parsedList);
-      setLoading(false)
+      setLoading({status:false,para:null})
     }
     if(props.state.contract){
       displayAccessList()
@@ -70,6 +70,7 @@ export default function Card(props) {
 
   return (
     <>
+    {loading.status && <Loader para={loading.para} />}
       <li>
         <img src={preview} alt="" />
         <div className="hover-text"><button onClick={() => { setDialogBox(true) }}>Access & Details<i className="fa-solid fa-diamond-turn-right" style={{ fontSize: "19px", padding: "0 6px" }}></i></button></div>

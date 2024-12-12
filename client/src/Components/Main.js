@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Card from '../Components/Card'
 import fileNotFound from '../filenotfound404.png'
-import Loading from '../Loading.gif'
+import Loader from './Loader'
 
 
 export default function Main(props) {
@@ -10,24 +10,29 @@ export default function Main(props) {
   const [userFiles, setUserFiles] = useState(false)
   const [accessedFiles, setAccessedFiles] = useState(false)
   const [allFiles, setAllFiles] = useState(true)
-  const [loading,setLoading]=useState(false)
+  const [loading,setLoading]=useState({status:false,para:null})
 
   //displaying accessed files 
   const displayAccessFiles = async () => {
     if (props.state.contract) {
-      setLoading(true)
+      setLoading({status:true,para:'Fetching files Please Wait...'})
       const data = await props.state.contract.displayData()
-      console.log("uploaded data: ", data)
-      const formattedData = data.map((fileURL) => ({
-        fileURL,
-        fileSize: "23432",
-        timeStamp: "3245345345"
+      console.log("uploaded data in accessfiles: ", data)
+      const formattedData = data.map((file) => ({
+        // fileName:file.name,
+        fileURL:file.url,
+        // fileSize: file.size.toString(),
+        // timeStamp: file.date
+        fileName:"Filename",
+        fileSize:'',
+        timeStamp:""
       }));
       setFileData(formattedData);
-      setLoading(false)
+      setLoading({status:false,para:null})
     }
   }
-
+  
+  // displaying recently uploaded file 
   useEffect(()=>{
     if(allFiles===true){
       console.log("displaying the recently uploaded file",props.uploadedFile)
@@ -41,16 +46,17 @@ export default function Main(props) {
   //displaying user files
   const displayUserFiles = async () => {
     if (props.state.contract) {
-      setLoading(true)
+      setLoading({status:true,para:'Fetching files Please Wait...'})
       const Userdata = await props.state.contract.displayUserFiles(props.accounts)
       console.log("user uploaded data: ", Userdata)
-      const formattedData = Userdata.map((fileURL) => ({
-        fileURL,
-        fileSize: "23432",
-        timeStamp: "3245345345"
+      const formattedData = Userdata.map((file) => ({
+        fileName:file.name,
+        fileURL:file.url,
+        fileSize: file.size.toString(),
+        timeStamp: file.date
       }));
       setFileData(formattedData);
-      setLoading(false)
+      setLoading({status:false,para:null})
     }
   }
 
@@ -72,6 +78,7 @@ export default function Main(props) {
   return (
     <>
       <main>
+        {loading.status && <Loader para={loading.para} />}
         <div className='btns'>
           <button onClick={() => { setAccessedFiles(false); setAllFiles(true); setUserFiles(false) }} style={{backgroundColor: allFiles ? 'black' : 'white', color: allFiles ? 'white' : 'black'}}>All</button>
           <button onClick={() => { setAccessedFiles(false); setAllFiles(false); setUserFiles(true) }} style={{backgroundColor: userFiles ? 'black' : 'white', color: userFiles ? 'white' : 'black'}}>Uploads</button>

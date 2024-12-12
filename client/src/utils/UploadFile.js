@@ -17,12 +17,13 @@ export const handleSubmit = async (selectedFile, state) => {
             console.log('signer', state.signer)
             const Size = upload.PinSize
             const timeStamp = upload.Timestamp.toString()
-            const uploadContract = await state.contract.uploadFile(`${ipfsHash}`);
+            const formattedTimeStamp=(timeStamp.split('Z')[0]).replace('T',', ')
+            const uploadContract = await state.contract.uploadFile(`${ipfsHash}`,'filename',formattedTimeStamp,Size);
             console.log("uploaded contract: ", uploadContract)
-            return {fileURL:ipfsHash,fileSize:Size,timeStamp:timeStamp};
-            // setFileData((prevFiles) => [...prevFiles, { fileURL: ipfsHash, fileSize: Size, timeStamp: timeStamp }])
+            return {fileURL:ipfsHash,fileSize:Size,timeStamp:formattedTimeStamp};
         }
     } catch (err) {
+        console.log("an error occured while uploading file",err)
         alert("An error occured while uploading file")
     }
 }

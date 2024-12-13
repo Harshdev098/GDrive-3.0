@@ -83,10 +83,14 @@ function App() {
   }
 
   const UploadFiletoPinata = async (selectedFile) => {
-    setLoading({ status: true, para: 'Please wait! Uploading your File' })
-    const data = await handleSubmit(selectedFile, state); // handling file upload to pinata 
-    setUploadedFile({ fileURL: data.fileURL, fileSize: data.fileSize, timeStamp: data.timeStamp })
-    setLoading({ status: false, para: null })
+    if (state.provider && state.contract) {
+      setLoading({ status: true, para: 'Please wait! Uploading your File' })
+      const data = await handleSubmit(selectedFile, state); // handling file upload to pinata 
+      setUploadedFile({ fileURL: data.fileURL, fileSize: data.fileSize, timeStamp: data.timeStamp })
+      setLoading({ status: false, para: null })
+    }else{
+      alert("Please connect your account")
+    }
   }
 
   return (

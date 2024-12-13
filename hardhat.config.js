@@ -10,7 +10,7 @@ module.exports = {
     },
     Ganache:{
       url:'HTTP://127.0.0.1:7545',
-      accounts:['0x6eafa9c930ebdc59b64044d385f834172526330e1d407fcb0ebcae5d9a5b6887']
+      accounts:['0xb8b5b20e63e0c3a45ae26188cfcf58dfc5ecd2bf4d95c84deaf6a5e9a809bd23']
     }
   },
   paths:{
@@ -20,3 +20,5 @@ module.exports = {
 
 
 // sepolia- 0x94f61B6e0a5E757F032F6575f991b842d97F68fb
+
+// sepolia final- 0xA7805153cd6989CcECf467f7506c1eF8dFf7Ae09

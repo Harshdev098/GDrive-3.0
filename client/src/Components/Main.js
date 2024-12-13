@@ -89,7 +89,7 @@ export default function Main(props) {
             return (files.fileURL && <Card key={index} data={files} state={state} />)
           })) : (
             <div style={{ textAlign: 'center' }}>
-              <img src={fileNotFound} alt="No files Uploaded yet!" />
+              <img src={fileNotFound}  alt="No files Uploaded yet!" />
             </div>
           )}
         </ul>

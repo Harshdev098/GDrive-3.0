@@ -467,3 +467,26 @@ header{
   align-items: center;
   z-index: 10001;
 }
+.aboutus {
+  width: 50%;
+  margin: auto;
+  text-align: center;
+}
+
+.aboutus h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.aboutus p {
+  font-size: 21px;
+  display: inline;
+  margin: 0 10px; 
+}
+
+.aboutus .quote-icon {
+  font-size: 22px;
+  display: inline;
+  vertical-align: top;
+  margin: 4px 10px; 
+}

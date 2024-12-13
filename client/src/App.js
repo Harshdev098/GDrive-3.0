@@ -7,6 +7,7 @@ import Drive from './contracts/contracts/Drive.sol/Drive.json'
 import Main from './Components/Main';
 import { handleSubmit } from './utils/UploadFile';
 import Loader from './Components/Loader';
+import About from './Components/About';
 
 function App() {
   const [state, setState] = useState({ provider: null, signer: null, contract: null })
@@ -99,7 +100,7 @@ function App() {
       {loading.status && <Loader para={loading.para} />}
       <Routes>
         <Route path='/' element={<Main ConnectWallet={ConnectWallet} state={state} accounts={accounts} uploadedFile={uploadedFile} />} />
-        <Route path='/about' />
+        <Route path='/about' element={<About />} />
       </Routes>
     </BrowserRouter>
   );

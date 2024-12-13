@@ -1,13 +1,31 @@
-# Sample Hardhat Project
+# GDrive
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+At GDrive 3.0, we are dedicated to providing a secure and user-friendly platform for storing, managing, and sharing files seamlessly.
 
-Try running some of the following tasks:
+## Running the Application
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.js
-```
+- Install all the dependencies 
+  ```
+  npm install
+  ```
+- Compile the smart contract
+  ```
+  npx hardhat compile
+  ```
+  Read more abourt working with smart contract and hardhat [here](https://hardhat.org/hardhat-runner/docs/guides/project-setup)
+- Deploy the smart contract
+  ```
+  npx hardhat ignition deploy ./ignition/modules/Deploy.js --network YOUR NETWORK (sepolia,ganache,localhost)
+  ```
+  Read more about deploying smart contract [here](https://hardhat.org/hardhat-runner/docs/guides/deploying)
+- Make a .env file and add the JWT token and Gateway from [Pinata](https://pinata.cloud/) inside the client folder 
+  ```
+  REACT_APP_PINATA_JWT= YOUR JWT TOKEN KEY
+  REACT_APP_PINATA_GATEWAY= YOUR GATEWAY
+  ```
+- Run the client application
+  ```
+  cd client
+  npm install
+  npm start
+  ```
